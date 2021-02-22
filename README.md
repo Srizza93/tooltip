@@ -9,3 +9,6 @@ Optional tasks:
 1. Tooltip should respect viewport boundaries and always stay within
 2. Where should be a way to activate tooltips on dynamically loaded content.
 3. Where should be a way for user to hover the tooltip and select text inside without tooltip disappear. 
+
+
+Start Date: 22/02/2021
