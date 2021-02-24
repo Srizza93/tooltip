@@ -1,56 +1,45 @@
+html {
+  width: 100%;
+  height: 100%;
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  font-size: small;
+  display: block;
+  margin: 8px;
+  width: 100%;
+  min-height: 100%;
+  height: fit-content;
+  font-size: 3vw;
   font-weight: normal;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  line-height: 1.2;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.grid_container {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  margin: 5%;
-}
-
-.grid_item {
-  border-left: 1px solid #5bbaff;
-  border-bottom: 1px solid #5bbaff;
-  padding: 10%;
-}
-
-.titles {
-  color: white;
-  background-color: #4c76b2;
-  border-top: 1px solid black;
-}
-
-.right_border {
-  border-right: 1px solid black;
+  text-align: center;
 }
 
 .tool_tip {
   position: relative;
   display: inline-block;
-  border-bottom: 1px solid #5bbaff;
+  max-width: 80%;
+  height: auto;
+  border: 1px solid #5bbaff;
+  padding: 5px;
+  top: 20px;
 }
 
 .tool_tip .tool_tip_text {
+  position: absolute;
   visibility: hidden;
-  width: 50%;
+  font-size: 20px;
+  max-width: 150px;
+  height: auto;
+  padding: 5px;
+  top: 100%;
+  left: 50%;
+  z-index: 1;
+  border-radius: 6px;
   background-color: white;
   color: black;
-  border-radius: 6px;
-  padding: 3%;
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
-  position: absolute;
-  z-index: 1;
-  top: 100%;
-  left: 25%;
+  /* margin-left: -50px; JS necessary for this task | margin left dependent from tool_tip_text width */
 }
 
 .tool_tip:hover {
