@@ -5,7 +5,7 @@ class Tool_tip {
         this.toolTip_text = null;
         this.text = "200 x 200";
         this.text_marginLeft = 0;
-        this.loop();
+        setInterval(this.loop.bind(this), 500);
     }
     
     // Assign class to the new span and center it to the div
