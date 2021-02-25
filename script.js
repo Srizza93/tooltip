@@ -1,4 +1,5 @@
 class Tool_tip {
+    
     constructor() {
         this.toolTip = document.getElementsByClassName("tool_tip");
         this.toolTip_text = null;
