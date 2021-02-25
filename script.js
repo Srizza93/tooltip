@@ -25,7 +25,8 @@ class Tool_tip {
     calculations() {
         this.text_marginLeft = this.toolTip_text.offsetWidth / 2;
     }
-
+    
+    // Loop through all divs in the page with tool_tip class name
     loop() {
         for (let i = 0; i < this.toolTip.length; i++) {
             this.createNewElement(this.toolTip[i]);
