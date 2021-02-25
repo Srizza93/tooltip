@@ -1,3 +1,6 @@
+
+Link: https://srizza93.github.io/tool_tip/
+
 # tool_tip
 A tool tip plugin with specific conditions and optional tasks
 
@@ -12,7 +15,3 @@ Optional tasks:
 
 
 Start Date: 22/02/2021
-
-Link:
-
-https://srizza93.github.io/tool_tip/
