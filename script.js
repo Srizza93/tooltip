@@ -1,18 +1,28 @@
 class Tool_tip {
-  
     constructor() {
-        this.tool_tip = document.querySelector(".tool_tip_text");
-        this.toolTip_width = this.tool_tip.offsetWidth;
-        this.calculations();
+        this.toolTip = document.querySelector(".tool_tip");
+        this.toolTip_text = document.createElement("span");
+        this.text = "200 x 200";
+        this.text_marginLeft = 0;
+        this.createNewElement();
     }
-
+    
+    // Assign class to the new span and center it to the div
     rendering() {
-        this.tool_tip.style.marginLeft = this.toolTip_width + 'px';
+        this.toolTip_text.className += "tool_tip_text";
+        this.calculations();
+        this.toolTip_text.style.marginLeft = - this.text_marginLeft + 'px';
     }
-
-    calculations() {
-        this.toolTip_width = - this.toolTip_width / 2;
+    
+    // Create the new span and append it to the tool_tip class elements
+    createNewElement() {
+        this.toolTip_text.appendChild(document.createTextNode(this.text));
+        this.toolTip.appendChild(this.toolTip_text);
         this.rendering();
+    }
+    
+    calculations() {
+        this.text_marginLeft = this.toolTip_text.offsetWidth / 2;
     }
 }
 
