@@ -13,6 +13,7 @@ body {
   font-weight: normal;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: center;
+  white-space: nowrap;
 }
 
 .tool_tip {
@@ -28,10 +29,10 @@ body {
 .tool_tip .tool_tip_text {
   position: absolute;
   visibility: hidden;
-  font-size: 20px;
+  font-size: 2vw;
   max-width: 150px;
   height: auto;
-  padding: 5px;
+  padding: 3%;
   top: 100%;
   left: 50%;
   z-index: 1;
@@ -39,7 +40,6 @@ body {
   background-color: white;
   color: black;
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
-  /* margin-left: -50px; JS necessary for this task | margin left dependent from tool_tip_text width */
 }
 
 .tool_tip:hover {
