@@ -28,7 +28,7 @@ body {
 
 .tool_tip .tool_tip_text {
   position: absolute;
-  visibility: visible;
+  visibility: hidden;
   display: inline-block;
   font-size: 2vw;
   white-space: nowrap;
