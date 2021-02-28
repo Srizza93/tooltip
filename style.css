@@ -9,7 +9,7 @@ body {
   width: 100%;
   min-height: 100%;
   height: fit-content;
-  font-size: 3vw;
+  font-size: 2vw;
   font-weight: normal;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: center;
@@ -31,6 +31,7 @@ body {
   visibility: visible;
   display: inline-block;
   font-size: 2vw;
+  white-space: nowrap;
   max-width: 150px;
   height: auto;
   padding: 5px 0;
