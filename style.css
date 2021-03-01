@@ -15,6 +15,12 @@ body {
   text-align: center;
 }
 
+/* !!! ATTENTION - look now at tooltip with lots of text !!! */
+p {
+  overflow: hidden;
+}
+/* !!! ATTENTION !!! */
+
 .wrapper {
   width: 500px;
   margin: 0 auto;
