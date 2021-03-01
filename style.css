@@ -17,12 +17,14 @@ body {
 
 .toolTip {
   position: relative;
+  white-space: nowrap;
 }
 
 .toolTipPopUp {
   position: absolute;
   visibility: hidden;
   display: inline-block;
+  white-space: initial;
   font-size: 2vw;
   max-width: 150px;
   height: auto;
@@ -31,7 +33,7 @@ body {
   top: 100%;
   left: 50%;
   border-radius: 6px;
-  background-color: yellow;
+  background-color: white;
   color: black;
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
 }
