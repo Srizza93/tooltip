@@ -1,37 +1,38 @@
-class Tool_tip {
+class ToolTip {
+    
     constructor() {
-        this.toolTip = document.querySelectorAll("div.tool_tip");
-        this.toolTip_text = undefined;
-        this.text = "200 x 200";
-        this.text_marginLeft = 0;
-        this.textWidth = "";
-        this.loop();
+        this.toolTip = document.querySelectorAll('[data-tooltip]');
+        this.toolTipPopUp = undefined;
+        this.marginLeftPopUp = 0;
+        this.findAllTooltips();
     }
     
-    // Loop through all divs in the page with tool_tip class name
-    loop() {
-        this.toolTip.forEach((div) => this.createNewElement(div));
+    // Loop through all elements in the page with data-tooltip property
+    findAllTooltips() {
+        this.toolTip.forEach((container) => {
+            container.addEventListener("onload", this.render(container));
+        });
     }
     
-    // Create the new span and append it to the tool_tip class elements
-    createNewElement(div) {
-        this.toolTip_text = document.createElement("span");
-        this.toolTip_text.appendChild(document.createTextNode(this.text));
-        div.appendChild(this.toolTip_text);
-        this.rendering();
+    render(container) {
+        this.textPopUp = container.getAttribute('data-tooltip');
+        this.toolTipPopUp = document.createElement("span");
+        this.toolTipPopUp.appendChild(document.createTextNode(this.textPopUp));
+        container.className = "toolTip";
+        this.toolTipPopUp.className = "toolTipPopUp";
+        this.mount(container);
     }
     
-    // Assign class to the new span and center it to the div
-    rendering() {
-        this.toolTip_text.className = "tool_tip_text";
-        this.calculations();
-        this.toolTip_text.style.marginLeft = - this.text_marginLeft + 'px';
+    mount(tooltip) {
+        tooltip.appendChild(this.toolTipPopUp);
+        this.position();
     }
     
-    calculations() {
-        this.text_marginLeft = this.toolTip_text.offsetWidth / 2;
+    position() {
+        this.toolTipPopUp.style.transform = "translateX(-50%)";
+        this.toolTipPopUp.style.left = "50%";
     }
 
 }
 
-new Tool_tip();
+new ToolTip();
