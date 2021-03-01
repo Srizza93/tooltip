@@ -9,15 +9,21 @@ body {
   width: 100%;
   min-height: 100%;
   height: fit-content;
-  font-size: 2vw;
+  font-size: 18px;
   font-weight: normal;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: center;
 }
 
+.wrapper {
+  width: 500px;
+  margin: 0 auto;
+}
+
 .toolTip {
   position: relative;
   white-space: nowrap;
+  color: red;
 }
 
 .toolTipPopUp {
@@ -25,7 +31,7 @@ body {
   visibility: hidden;
   display: inline-block;
   white-space: initial;
-  font-size: 2vw;
+  font-size: 18px;
   max-width: 150px;
   height: auto;
   padding: 5px 0;
