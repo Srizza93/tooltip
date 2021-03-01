@@ -15,23 +15,15 @@ body {
   text-align: center;
 }
 
-.tool_tip {
+.toolTip {
   position: relative;
-  display: inline-block;
-  max-width: 80%;
-  height: auto;
-  border: 1px solid #5bbaff;
-  padding: 2%;
-  margin: 2%;
-  top: 20px;
 }
 
-.tool_tip .tool_tip_text {
+.toolTipPopUp {
   position: absolute;
   visibility: hidden;
   display: inline-block;
   font-size: 2vw;
-  white-space: nowrap;
   max-width: 150px;
   height: auto;
   padding: 5px 0;
@@ -39,16 +31,16 @@ body {
   top: 100%;
   left: 50%;
   border-radius: 6px;
-  background-color: white;
+  background-color: yellow;
   color: black;
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
 }
 
-.tool_tip:hover {
+.toolTip:hover {
   background-color: #4c76b2;
   opacity: 0.8;
 }
 
-.tool_tip:hover .tool_tip_text {
+.toolTip:hover .toolTipPopUp {
   visibility: visible;
 }
