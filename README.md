@@ -13,5 +13,8 @@ Optional tasks:
 2. Where should be a way to activate tooltips on dynamically loaded content.
 3. Where should be a way for user to hover the tooltip and select text inside without tooltip disappear. 
 
+Visual
+![Image of Tooltip](tooltip.png)
+
 
 Start Date: 22/02/2021
