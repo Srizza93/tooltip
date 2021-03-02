@@ -27,23 +27,28 @@ p {
 }
 
 .toolTip {
-  position: relative;
-  white-space: nowrap;
+  display: inline;
   color: red;
 }
 
-.toolTipPopUp {
+.toolTipWrapper {
   position: absolute;
   visibility: hidden;
-  display: inline-block;
-  white-space: initial;
+}
+
+.toolTip:hover .toolTipWrapper {
+  visibility: visible;
+}
+
+.toolTipPopUp {
+  top: 1.2em;
+  display: block;
+  position: relative;
   font-size: 18px;
-  max-width: 150px;
+  max-width: 300px;
   height: auto;
   padding: 5px 0;
-  z-index: 1;
-  top: 100%;
-  left: 50%;
+  z-index: 99;
   border-radius: 6px;
   background-color: white;
   color: black;
@@ -52,9 +57,5 @@ p {
 
 .toolTip:hover {
   background-color: #4c76b2;
-  opacity: 0.8;
 }
 
-.toolTip:hover .toolTipPopUp {
-  visibility: visible;
-}
