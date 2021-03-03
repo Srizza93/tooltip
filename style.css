@@ -12,11 +12,11 @@ body {
   font-size: 18px;
   font-weight: normal;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
 }
 
 /* !!! ATTENTION - look now at tooltip with lots of text !!! */
 p {
-  position: relative; /* OOPS! You can't go around that */
   overflow: hidden;
 }
 /* !!! ATTENTION !!! */
