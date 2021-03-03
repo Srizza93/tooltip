@@ -14,18 +14,23 @@ class ToolTip {
     
     render(container) {
         this.textPopUp = container.getAttribute('data-tooltip');
+        // Create new elements
         this.toolTipWrapper = document.createElement('span');
         this.toolTipPopUp = document.createElement('span');
-        this.toolTipWrapper.appendChild(this.toolTipPopUp);
+        // Add text in tooltip
         this.toolTipPopUp.appendChild(document.createTextNode(this.textPopUp));
+        // Add classes to the 3 elements involved:
+        // tooltip, tooltip wrapper, tooltip pop up
         container.classList.add('toolTip');
         this.toolTipWrapper.classList.add('toolTipWrapper');
         this.toolTipPopUp.classList.add('toolTipPopUp');
         this.mount(container);
     }
     
+    // Mount into DOM
     mount(tooltip) {
         tooltip.appendChild(this.toolTipWrapper);
+        this.toolTipWrapper.appendChild(this.toolTipPopUp);
     }
 
 }
