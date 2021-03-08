@@ -53,6 +53,9 @@ class ToolTip {
         this.containerCoords = container.currentTarget.getBoundingClientRect();
         this.containerWidth = container.currentTarget.offsetWidth;
         this.positionDifference = (this.detectedToolTip.offsetWidth - this.containerWidth) / 2;
+        if (this.containerCoords.left - this.positionDifference < 0) {
+            this.positionDifference = 0;
+        }
         this.position();
         this.displayToolTip();
     }
