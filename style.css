@@ -27,34 +27,44 @@ p {
 }
 
 .toolTip {
-  display: inline;
   color: red;
 }
 
-.toolTipWrapper {
-  position: absolute;
-  visibility: hidden;
-}
-
-.toolTip:hover .toolTipWrapper {
-  visibility: visible;
+.toolTip:hover {
+  background-color: #4c76b2;
 }
 
 .toolTipPopUp {
-  top: 1.2em;
-  display: block;
-  position: relative;
+  visibility: hidden;
+  position: absolute;
   font-size: 18px;
-  max-width: 300px;
+  max-width: 450px;
+  z-index: 99999;
   height: auto;
-  padding: 5px 0;
-  z-index: 99;
+  padding: 5px;
   border-radius: 6px;
   background-color: white;
   color: black;
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
 }
 
-.toolTip:hover {
-  background-color: #4c76b2;
+.closingTag {
+  font-size: 8px;
+  font-weight: bolder;
+  text-align: center;
+  position: relative;
+  float: right;
+  height: 12px;
+  width: 12px;
+  margin: 0px 0px 5px 20px;
+  border-radius: 50%;
+  background-color: black;
+  color: white;
+  border: 1.5px solid black;
+  cursor: pointer;
 }
+
+.closingTag:hover {
+  opacity: 0.7;
+}
+
