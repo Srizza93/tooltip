@@ -4,88 +4,97 @@ class ToolTip {
         this.toolTip = document.querySelectorAll('[data-tooltip]');
         this.bridge = document.querySelector('.bridge');
         this.toolTipPopUp = undefined;
-        this.closingTag = undefined;
         this.toolTipClick = false;
+        this.toolTipText = undefined;
+        this.containerLeft = undefined;
+        this.containerWidth = undefined;
+        this.containerStyle = undefined;
+        this.containerFontSize = undefined;
+        this.centerToolTip = undefined;
         this.findAllTooltips();
     }
     
     // Loop through all elements in the page with data-tooltip property
     findAllTooltips() {
-        this.toolTip.forEach((container) => { 
-            this.render(container) 
+        this.toolTip.forEach((container) => {
+            this.selectContainers(container); 
             this.addEvents(container);
         });
     }
+    
+    // Add class to containers
+    // This class can be customized on style.css
+    selectContainers(container) {
+        container.classList.add('toolTip');
+    }
 
     addEvents(container) {
-        container.addEventListener('mouseenter', this.detectTooltip.bind(this));
-        container.addEventListener('click', this.detectTooltip.bind(this));
-        this.closingTag.addEventListener('click', this.closeToolTip.bind(this));
+        container.addEventListener('mouseenter', this.openToolTip.bind(this));
+        container.addEventListener('mouseleave', this.closeToolTip.bind(this));
+        container.addEventListener('click', this.switchToolTip.bind(this));
+    }
+    // Detect the hovered or clicked tooltip container
+    openToolTip(container) {
+        this.toolTipText = container.currentTarget.dataset.tooltip;
+        this.containerLeft = container.currentTarget.getBoundingClientRect().left;
+        this.containerTop = container.currentTarget.getBoundingClientRect().top;
+        this.containerWidth = container.currentTarget.offsetWidth;
+        this.containerStyle = window.getComputedStyle(container.currentTarget, null).getPropertyValue('font-size');
+        this.containerFontSize = parseInt(this.containerStyle);
+        this.render();
     }
     
-    render(container) {
-        this.textPopUp = container.getAttribute('data-tooltip');
-        // Create new elements
+    closeToolTip() {
+        this.toolTipPopUp.remove();
+    }
+
+    closeOnClick() {
+        document.querySelectorAll('.toolTipPopUp').forEach(element => element.remove());
+    }
+
+    // Switcher for touch screen devices
+    switchToolTip(container) {
+        if (!this.toolTipClick) {
+            this.toolTipClick = true;
+            this.openToolTip(container);
+        }
+        else {
+            this.toolTipClick = false;
+            this.closeOnClick();
+        }
+    }
+
+    render() {
+        // Create new element
         this.toolTipPopUp = document.createElement('span');
-        this.closingTag = document.createElement('span');
-        // Add text in tooltip and closing tag
-        this.toolTipPopUp.appendChild(this.closingTag);
-        this.closingTag.appendChild(document.createTextNode('x'));
-        this.toolTipPopUp.appendChild(document.createTextNode(this.textPopUp));
-        // Add classes
-        container.classList.add('toolTip');
+        // Add text in tooltip
+        this.toolTipPopUp.appendChild(document.createTextNode(this.toolTipText));
+        // Add class
         this.toolTipPopUp.classList.add('toolTipPopUp');
-        this.closingTag.classList.add('closingTag');
-        // Assign attribute
-        this.toolTipPopUp.setAttribute('data-tooltip', this.textPopUp);
         this.mount();
     }
     
     // Mount into DOM
     mount() {
         this.bridge.appendChild(this.toolTipPopUp);
+        this.calculatePosition();
     }
     
-    // Detect the hovered or clicked tooltip
-    detectTooltip(container) {
-        this.detectedMessage = container.currentTarget.dataset.tooltip;
-        this.detectedToolTip = document.querySelector(`[data-tooltip="${this.detectedMessage}"]`);
-        this.containerCoords = container.currentTarget.getBoundingClientRect();
-        this.containerWidth = container.currentTarget.offsetWidth;
-        this.positionDifference = (this.detectedToolTip.offsetWidth - this.containerWidth) / 2;
-        if (this.containerCoords.left - this.positionDifference < 0) {
-            this.positionDifference = 0;
+    // Calculate tooltip position
+    calculatePosition() {
+        this.centerToolTip = (this.toolTipPopUp.offsetWidth - this.containerWidth) / 2;
+        if (this.containerLeft - this.centerToolTip < 0) {
+            this.centerToolTip = 0;
         }
-        this.position();
-        this.displayToolTip();
+        this.setPosition();
+    }
+
+    // Set tooltip position
+    setPosition() {
+        this.toolTipPopUp.style.left = (this.containerLeft - this.centerToolTip) + 'px';
+        this.toolTipPopUp.style.top = (this.containerTop + this.containerFontSize + 2) + 'px';
     }
     
-    // Open or close tooltip
-    displayToolTip() {
-        if (!this.toolTipClick) {
-            this.openToolTip();
-            this.toolTipClick = true;
-        }
-        else {
-            this.closeToolTip();
-            this.toolTipClick = false;
-        }
-    }
-
-    openToolTip() {
-        this.detectedToolTip.style.visibility = 'visible';
-    }
-    
-    closeToolTip() {
-        document.querySelectorAll('.toolTipPopUp').forEach(element => element.style.visibility = 'hidden');
-    }
-
-    // Set position of tooltip
-    position() {
-        this.detectedToolTip.style.left = (this.containerCoords.left - this.positionDifference) + 'px';
-        this.detectedToolTip.style.top = (this.containerCoords.top + 35) + 'px';
-    }
-
 }
 
 new ToolTip();
