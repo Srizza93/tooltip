@@ -1,5 +1,5 @@
 
-Link: https://srizza93.github.io/tool_tip/
+Link: https://srizza93.github.io/tooltip/
 
 # Tooltip
 A tool tip plugin with specific conditions and optional tasks
