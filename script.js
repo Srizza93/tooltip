@@ -4,14 +4,13 @@ class ToolTip {
         this.toolTip = document.querySelectorAll('[data-tooltip]');
         this.bridge = document.querySelector('.bridge');
         this.toolTipPopUp = undefined;
-        this.toolTipClick = false;
+        this.toolTipClick = true;
         this.toolTipText = undefined;
         this.containerLeft = undefined;
         this.containerRight = undefined;
         this.containerWidth = undefined;
         this.containerHeight = undefined;
         this.centerToolTip = undefined;
-        this.checkMouseEnter = false;
         this.viewportWidth = document.documentElement.clientWidth;
         this.findAllTooltips();
     }
@@ -31,12 +30,13 @@ class ToolTip {
     }
 
     addEvents(container) {
-        container.addEventListener('mouseenter', this.openToolTip.bind(this));
-        container.addEventListener('mouseleave', this.closeToolTip.bind(this));
+        container.addEventListener('mouseenter', this.detectToolTip.bind(this));
+        container.addEventListener('mouseleave', this.mouseLeave.bind(this));
         container.addEventListener('click', this.switchToolTip.bind(this));
     }
+
     // Detect the hovered or clicked tooltip container
-    openToolTip(container) {
+    detectToolTip(container) {
         this.toolTipText = container.currentTarget.dataset.tooltip;
         this.containerLeft = container.currentTarget.getBoundingClientRect().left;
         this.containerRight = container.currentTarget.getBoundingClientRect().right;
@@ -45,26 +45,33 @@ class ToolTip {
         this.containerHeight = container.currentTarget.offsetHeight;
         this.render();
     }
+
+    mouseLeave() {
+        this.deleteToolTip();
+        this.toolTipPopUp.addEventListener('mouseenter', this.mount.bind(this));
+        this.toolTipPopUp.addEventListener('mouseleave', this.deleteToolTip.bind(this));
+    }
     
-    closeToolTip() {
-            this.toolTipPopUp.remove();
-    }
-
-    closeOnClick() {
-        document.querySelectorAll('.toolTipPopUp').forEach(element => element.remove());
-    }
-
     // Switcher for touch screen devices
     switchToolTip(container) {
         if (!this.toolTipClick) {
             this.toolTipClick = true;
-            this.openToolTip(container);
+            this.detectToolTip(container);
         }
         else {
             this.toolTipClick = false;
-            this.closeOnClick();
+            this.deleteOnClick();
         }
     }
+
+    deleteToolTip() {
+            this.toolTipPopUp.remove();
+    }
+
+    deleteOnClick() {
+        document.querySelectorAll('.toolTipPopUp').forEach(tooltip => tooltip.remove());
+    }
+
 
     render() {
         // Create new element
@@ -79,6 +86,7 @@ class ToolTip {
     // Mount into DOM
     mount() {
         this.bridge.appendChild(this.toolTipPopUp);
+        this.toolTipClick = true;
         this.calculatePosition();
     }
     
@@ -87,28 +95,22 @@ class ToolTip {
         this.centerToolTip = (this.toolTipPopUp.offsetWidth - this.containerWidth) / 2;
         if (this.containerLeft - this.centerToolTip <= 0) {
             this.centerToolTip = 0;
-            this.setLeftPosition();
         }
-        else if (this.containerRight + (this.toolTipPopUp.offsetWidth / 2) >= this.viewportWidth) {
-            this.setRightPosition();
+        if (this.containerRight + this.centerToolTip >= this.viewportWidth) {
+            this.setWidth();
+            this.centerToolTip = this.toolTipPopUp.offsetWidth - this.containerWidth;
         } 
-        else {
-            this.setLeftPosition();
-        }
+        this.setPosition();
     }
     
-    // Set left and top tooltip position
-    setLeftPosition() {
-        this.toolTipPopUp.style.left = (this.containerLeft - this.centerToolTip) + 'px';
-        this.toolTipPopUp.style.top = (this.containerTop + this.containerHeight) + 'px';
+    setPosition() {
+        this.toolTipPopUp.style.top = this.containerTop + this.containerHeight + 'px';
+        this.toolTipPopUp.style.left = this.containerLeft - this.centerToolTip + 'px';
     }
-
-    // Set right and top tooltip position
-    setRightPosition() {
+    
+    setWidth() {
         const toolTipPopUpWidth = this.toolTipPopUp.offsetWidth;
         this.toolTipPopUp.style.width = toolTipPopUpWidth + 'px';
-        this.toolTipPopUp.style.left = (this.containerRight - this.toolTipPopUp.offsetWidth) + 'px';
-        this.toolTipPopUp.style.top = (this.containerTop + this.containerHeight) + 'px';
     }
     
 }
