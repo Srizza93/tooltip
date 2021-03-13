@@ -7,10 +7,12 @@ class ToolTip {
         this.toolTipClick = false;
         this.toolTipText = undefined;
         this.containerLeft = undefined;
+        this.containerRight = undefined;
         this.containerWidth = undefined;
-        this.containerStyle = undefined;
-        this.containerFontSize = undefined;
+        this.containerHeight = undefined;
         this.centerToolTip = undefined;
+        this.checkMouseEnter = false;
+        this.viewportWidth = document.documentElement.clientWidth;
         this.findAllTooltips();
     }
     
@@ -37,15 +39,15 @@ class ToolTip {
     openToolTip(container) {
         this.toolTipText = container.currentTarget.dataset.tooltip;
         this.containerLeft = container.currentTarget.getBoundingClientRect().left;
+        this.containerRight = container.currentTarget.getBoundingClientRect().right;
         this.containerTop = container.currentTarget.getBoundingClientRect().top;
         this.containerWidth = container.currentTarget.offsetWidth;
-        this.containerStyle = window.getComputedStyle(container.currentTarget, null).getPropertyValue('font-size');
-        this.containerFontSize = parseInt(this.containerStyle);
+        this.containerHeight = container.currentTarget.offsetHeight;
         this.render();
     }
     
     closeToolTip() {
-        this.toolTipPopUp.remove();
+            this.toolTipPopUp.remove();
     }
 
     closeOnClick() {
@@ -66,7 +68,7 @@ class ToolTip {
 
     render() {
         // Create new element
-        this.toolTipPopUp = document.createElement('span');
+        this.toolTipPopUp = document.createElement('div');
         // Add text in tooltip
         this.toolTipPopUp.appendChild(document.createTextNode(this.toolTipText));
         // Add class
@@ -83,16 +85,30 @@ class ToolTip {
     // Calculate tooltip position
     calculatePosition() {
         this.centerToolTip = (this.toolTipPopUp.offsetWidth - this.containerWidth) / 2;
-        if (this.containerLeft - this.centerToolTip < 0) {
+        if (this.containerLeft - this.centerToolTip <= 0) {
             this.centerToolTip = 0;
+            this.setLeftPosition();
         }
-        this.setPosition();
+        else if (this.containerRight + (this.toolTipPopUp.offsetWidth / 2) >= this.viewportWidth) {
+            this.setRightPosition();
+        } 
+        else {
+            this.setLeftPosition();
+        }
+    }
+    
+    // Set left and top tooltip position
+    setLeftPosition() {
+        this.toolTipPopUp.style.left = (this.containerLeft - this.centerToolTip) + 'px';
+        this.toolTipPopUp.style.top = (this.containerTop + this.containerHeight) + 'px';
     }
 
-    // Set tooltip position
-    setPosition() {
-        this.toolTipPopUp.style.left = (this.containerLeft - this.centerToolTip) + 'px';
-        this.toolTipPopUp.style.top = (this.containerTop + this.containerFontSize + 2) + 'px';
+    // Set right and top tooltip position
+    setRightPosition() {
+        const toolTipPopUpWidth = this.toolTipPopUp.offsetWidth;
+        this.toolTipPopUp.style.width = toolTipPopUpWidth + 'px';
+        this.toolTipPopUp.style.left = (this.containerRight - this.toolTipPopUp.offsetWidth) + 'px';
+        this.toolTipPopUp.style.top = (this.containerTop + this.containerHeight) + 'px';
     }
     
 }
