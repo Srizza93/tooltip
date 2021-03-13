@@ -37,7 +37,6 @@ p {
 }
 
 .toolTipPopUp {
-  visibility: visible;
   position: absolute;
   display: inline-block;
   font-size: 18px;
