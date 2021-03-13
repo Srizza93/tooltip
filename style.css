@@ -26,6 +26,8 @@ p {
   margin: 0 auto;
 }
 
+/* TOOLTIP COMPONENT */
+
 .toolTip {
   color: red;
 }
@@ -37,6 +39,7 @@ p {
 .toolTipPopUp {
   visibility: visible;
   position: absolute;
+  display: inline-block;
   font-size: 18px;
   max-width: 450px;
   z-index: 99999;
