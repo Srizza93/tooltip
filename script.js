@@ -104,7 +104,7 @@ class ToolTip {
     }
     
     setPosition() {
-        this.toolTipPopUp.style.top = this.containerTop + this.containerHeight + 'px';
+        this.toolTipPopUp.style.top = this.containerTop + this.containerHeight + 10 + 'px';
         this.toolTipPopUp.style.left = this.containerLeft - this.centerToolTip + 'px';
     }
     
