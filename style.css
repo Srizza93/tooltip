@@ -26,8 +26,6 @@ p {
   margin: 0 auto;
 }
 
-/* TOOLTIP COMPONENT */
-
 .toolTip {
   color: red;
 }
@@ -42,11 +40,24 @@ p {
   font-size: 18px;
   max-width: 450px;
   z-index: 99999;
+  padding: 15px;
+  border: 5px solid #3B3737;
   height: auto;
-  padding: 5px;
   border-radius: 6px;
-  background-color: white;
-  color: black;
+  background-color: #262323;
+  color: white;
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+}
+
+.toolTipPopUp::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -15px;
+  border-width: 15px;
+  transform: rotate(180deg);
+  border-style: solid;
+  border-color: #3B3737 transparent transparent transparent;
 }
 
