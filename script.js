@@ -11,14 +11,32 @@ class ToolTip {
         this.containerWidth = undefined;
         this.containerHeight = undefined;
         this.centerToolTip = undefined;
+        this.elementToObserve = document.querySelector('body');
+        this.observer = undefined;
+        this.updates = [];
         this.viewportWidth = document.documentElement.clientWidth;
         this.findAllTooltips();
+        this.detectDynamicContentLoaded(this.toolTip, this.selectContainers, this.findAllTooltips);
+    }
+    
+    detectDynamicContentLoaded(toolTips, selectContainers) {
+        var insertedNodes = [];
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                for (var i = 0; i < mutation.addedNodes.length; i++)
+                insertedNodes.push(mutation.addedNodes[i]);
+                toolTips = document.querySelectorAll('[data-tooltip]');
+                toolTips.forEach((toolTip, i) => {
+                    selectContainers(toolTips[i]);
+                });
+            })
+        });
+        observer.observe(this.elementToObserve, { subtree: true, childList: true });
     }
     
     // Loop through all elements in the page with data-tooltip property
     findAllTooltips() {
         this.toolTip.forEach((container) => {
-            this.selectContainers(container); 
             this.addEvents(container);
         });
     }
