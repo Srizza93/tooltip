@@ -16,7 +16,7 @@ class ToolTip {
         this.updates = [];
         this.viewportWidth = document.documentElement.clientWidth;
         this.findAllTooltips();
-        this.detectDynamicContentLoaded(this.toolTip, this.selectContainers, this.findAllTooltips);
+        this.detectDynamicContentLoaded(this.toolTip, this.selectContainers);
     }
     
     detectDynamicContentLoaded(toolTips, selectContainers) {
@@ -25,11 +25,11 @@ class ToolTip {
             mutations.forEach(function(mutation) {
                 for (var i = 0; i < mutation.addedNodes.length; i++)
                 insertedNodes.push(mutation.addedNodes[i]);
-                toolTips = document.querySelectorAll('[data-tooltip]');
-                toolTips.forEach((toolTip, i) => {
-                    selectContainers(toolTips[i]);
-                });
             })
+            toolTips = document.querySelectorAll('[data-tooltip]');
+            toolTips.forEach((toolTip, index) => {
+                selectContainers(toolTips[index]);
+            });
         });
         observer.observe(this.elementToObserve, { subtree: true, childList: true });
     }
