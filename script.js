@@ -2,7 +2,6 @@ class ToolTip {
     
     constructor() {
         this.toolTip = document.querySelectorAll('[data-tooltip]');
-        this.bridge = document.querySelector('.bridge');
         this.toolTipPopUp = undefined;
         this.toolTipClick = true;
         this.toolTipText = undefined;
@@ -12,32 +11,37 @@ class ToolTip {
         this.containerHeight = undefined;
         this.centerToolTip = undefined;
         this.elementToObserve = document.querySelector('body');
-        this.observer = undefined;
-        this.updates = [];
         this.viewportWidth = document.documentElement.clientWidth;
-        this.findAllTooltips();
-        this.detectDynamicContentLoaded(this.toolTip, this.selectContainers);
+        this.target = undefined;
+        this.observer = undefined;
+        setTimeout(this.detectDynamicContentLoaded.bind(this), 1);
     }
     
-    detectDynamicContentLoaded(toolTips, selectContainers) {
-        var insertedNodes = [];
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                for (var i = 0; i < mutation.addedNodes.length; i++)
-                insertedNodes.push(mutation.addedNodes[i]);
-            })
-            toolTips = document.querySelectorAll('[data-tooltip]');
-            toolTips.forEach((toolTip, index) => {
-                selectContainers(toolTips[index]);
-            });
-        });
-        observer.observe(this.elementToObserve, { subtree: true, childList: true });
+    detectDynamicContentLoaded() {
+        let self = this;
+        this.target = document.querySelector('body');
+        this.config = { childList: true, subtree: true };
+        this.callBackObserver = function(mutationsList) {
+            for (let mutation of mutationsList) {
+                if (mutation.addedNodes[0] !== undefined) {
+                    let containerClass = mutation.addedNodes[0].classList[0];
+                    if (mutation.type == 'childList' && containerClass !== 'toolTipPopUp') {
+                        let container = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
+                        self.findAllTooltips(container);
+                    }
+                }
+            }
+        }
+        this.observer = new MutationObserver(this.callBackObserver);
+        this.observer.observe(this.target, this.config);
     }
     
     // Loop through all elements in the page with data-tooltip property
-    findAllTooltips() {
-        this.toolTip.forEach((container) => {
-            this.addEvents(container);
+    findAllTooltips(container) {
+        let self  = this;
+        container.forEach((tooltip) => {
+            self.selectContainers(tooltip);
+            self.addEvents(tooltip);
         });
     }
     
@@ -78,18 +82,13 @@ class ToolTip {
         }
         else {
             this.toolTipClick = false;
-            this.deleteOnClick();
+            this.deleteToolTip();
         }
     }
 
     deleteToolTip() {
-            this.toolTipPopUp.remove();
-    }
-
-    deleteOnClick() {
         document.querySelectorAll('.toolTipPopUp').forEach(tooltip => tooltip.remove());
     }
-
 
     render() {
         // Create new element
@@ -103,7 +102,7 @@ class ToolTip {
     
     // Mount into DOM
     mount() {
-        this.bridge.appendChild(this.toolTipPopUp);
+        document.querySelector('body').appendChild(this.toolTipPopUp);
         this.toolTipClick = true;
         this.calculatePosition();
     }
