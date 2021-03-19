@@ -10,11 +10,13 @@ class ToolTip {
         this.containerWidth = undefined;
         this.containerHeight = undefined;
         this.centerToolTip = undefined;
+        this.scrollTop = undefined;
         this.elementToObserve = document.querySelector('body');
         this.viewportWidth = document.documentElement.clientWidth;
         this.target = undefined;
         this.observer = undefined;
-        setTimeout(this.detectDynamicContentLoaded.bind(this), 1);
+        this.findAllToolTips(this.toolTip);
+        this.detectDynamicContentLoaded();
     }
     
     detectDynamicContentLoaded() {
@@ -23,11 +25,11 @@ class ToolTip {
         this.config = { childList: true, subtree: true };
         this.callBackObserver = function(mutationsList) {
             for (let mutation of mutationsList) {
-                if (mutation.addedNodes[0] !== undefined) {
+                if (mutation.addedNodes[0] && mutation.addedNodes[0].classList) {
                     let containerClass = mutation.addedNodes[0].classList[0];
-                    if (mutation.type == 'childList' && containerClass !== 'toolTipPopUp') {
-                        let container = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
-                        self.findAllTooltips(container);
+                    if (containerClass && containerClass !== 'toolTipPopUp') {
+                        this.toolTip = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
+                        self.findAllToolTips(this.toolTip);
                     }
                 }
             }
@@ -36,15 +38,15 @@ class ToolTip {
         this.observer.observe(this.target, this.config);
     }
     
-    // Loop through all elements in the page with data-tooltip property
-    findAllTooltips(container) {
+    // Loop through all elements on new text
+    findAllToolTips(container) {
         let self  = this;
         container.forEach((tooltip) => {
             self.selectContainers(tooltip);
             self.addEvents(tooltip);
         });
     }
-    
+
     // Add class to containers
     // This class can be customized on style.css
     selectContainers(container) {
@@ -59,10 +61,11 @@ class ToolTip {
 
     // Detect the hovered or clicked tooltip container
     detectToolTip(container) {
+        this.scrollTop = document.documentElement.scrollTop;
         this.toolTipText = container.currentTarget.dataset.tooltip;
         this.containerLeft = container.currentTarget.getBoundingClientRect().left;
         this.containerRight = container.currentTarget.getBoundingClientRect().right;
-        this.containerTop = container.currentTarget.getBoundingClientRect().top;
+        this.containerTop = container.currentTarget.getBoundingClientRect().top + this.scrollTop;
         this.containerWidth = container.currentTarget.offsetWidth;
         this.containerHeight = container.currentTarget.offsetHeight;
         this.render();
@@ -102,7 +105,7 @@ class ToolTip {
     
     // Mount into DOM
     mount() {
-        document.querySelector('body').appendChild(this.toolTipPopUp);
+        document.querySelector('body').prepend(this.toolTipPopUp);
         this.toolTipClick = true;
         this.calculatePosition();
     }
