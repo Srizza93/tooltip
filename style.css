@@ -55,7 +55,7 @@ p {
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
 }
 
-.toolTipPopUp::after {
+.triangle {
   content: " ";
   position: absolute;
   top: 100%;
@@ -65,4 +65,3 @@ p {
   border-style: solid;
   border-color: #3B3737 transparent transparent transparent;
 }
-
