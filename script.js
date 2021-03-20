@@ -28,7 +28,7 @@ class ToolTip {
         this.config = { childList: true, subtree: true };
         this.callBackObserver = function(mutationsList) {
             for (let mutation of mutationsList) {
-                if (mutation.addedNodes[0].classList) {
+                if (mutation.addedNodes[0] && mutation.addedNodes[0].classList) {
                     let containerClass = mutation.addedNodes[0].classList;
                     if (!containerClass.contains('toolTipPopUp')) {
                         this.containers = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
