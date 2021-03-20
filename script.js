@@ -1,7 +1,7 @@
 class ToolTip {
     
     constructor() {
-        this.toolTip = document.querySelectorAll('[data-tooltip]');
+        this.containers = document.querySelectorAll('[data-tooltip]');
         this.toolTipPopUp = undefined;
         this.wrapper =  undefined;
         this.toolTipClick = true;
@@ -12,25 +12,27 @@ class ToolTip {
         this.containerHeight = undefined;
         this.centerToolTip = undefined;
         this.scrollTop = undefined;
+        this.triangle = undefined;
         this.elementToObserve = document.querySelector('body');
         this.viewportWidth = document.documentElement.clientWidth;
         this.target = undefined;
         this.observer = undefined;
-        this.findAllToolTips(this.toolTip);
+        this.findAllToolTips(this.containers);
         this.detectDynamicContentLoaded();
     }
     
+    // Search for changes in the DOM
     detectDynamicContentLoaded() {
         let self = this;
         this.target = document.querySelector('body');
         this.config = { childList: true, subtree: true };
         this.callBackObserver = function(mutationsList) {
             for (let mutation of mutationsList) {
-                if (mutation.addedNodes[0] && mutation.addedNodes[0].classList) {
-                    let containerClass = mutation.addedNodes[0].classList[0];
-                    if (containerClass && containerClass !== 'toolTipPopUp') {
-                        this.toolTip = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
-                        self.findAllToolTips(this.toolTip);
+                if (mutation.addedNodes[0].classList) {
+                    let containerClass = mutation.addedNodes[0].classList;
+                    if (!containerClass.contains('toolTipPopUp')) {
+                        this.containers = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
+                        self.findAllToolTips(this.containers);
                     }
                 }
             }
@@ -39,7 +41,7 @@ class ToolTip {
         this.observer.observe(this.target, this.config);
     }
     
-    // Loop through all elements on new text
+    // Loop through all containers
     findAllToolTips(container) {
         let self  = this;
         container.forEach((tooltip) => {
@@ -49,7 +51,6 @@ class ToolTip {
     }
 
     // Add class to containers
-    // This class can be customized on style.css
     selectContainers(container) {
         container.classList.add('toolTip');
     }
@@ -95,14 +96,16 @@ class ToolTip {
     }
 
     render() {
-        // Create new element
+        // Create new elements
         this.wrapper = document.createElement('div');
         this.toolTipPopUp = document.createElement('div');
+        this.triangle = document.createElement('div');
         // Add text in tooltip
         this.toolTipPopUp.appendChild(document.createTextNode(this.toolTipText));
-        // Add class
+        // Add classes
         this.wrapper.classList.add('toolTipWrapper');
         this.toolTipPopUp.classList.add('toolTipPopUp');
+        this.triangle.classList.add('triangle');
         this.mount();
     }
     
@@ -110,21 +113,29 @@ class ToolTip {
     mount() {
         document.querySelector('body').prepend(this.wrapper);
         this.wrapper.appendChild(this.toolTipPopUp);
+        this.toolTipPopUp.appendChild(this.triangle);
         this.toolTipClick = true;
         this.calculatePosition();
     }
     
     // Calculate tooltip position
     calculatePosition() {
-        this.centerToolTip = (this.toolTipPopUp.offsetWidth - this.containerWidth) / 2;
+        this.centerToolTip = (this.wrapper.offsetWidth - this.containerWidth) / 2;
+        // Left Edge
         if (this.containerLeft - this.centerToolTip <= 0) {
+            this.leftEdge();
             this.centerToolTip = 0;
         }
+        // Right Edge
         if (this.containerRight + this.centerToolTip >= this.viewportWidth) {
-            this.setWidth();
+            this.rightEdge();
             this.centerToolTip = this.toolTipPopUp.offsetWidth - this.containerWidth;
-        } 
+        }
         this.setPosition();
+        // Top Edge
+        if (this.wrapper.offsetTop < 0) {
+            this.topEdge();
+        }
     }
     
     setPosition() {
@@ -132,10 +143,23 @@ class ToolTip {
         this.wrapper.style.left = this.containerLeft - this.centerToolTip + 'px';
     }
     
-    setWidth() {
+    leftEdge() {
+        this.triangle.style.left = this.containerWidth / 2 + 'px';
+    }
+
+    rightEdge() {
         const toolTipPopUpWidth = this.toolTipPopUp.offsetWidth;
         this.wrapper.style.width = toolTipPopUpWidth + 'px';
+        this.triangle.style.left = this.toolTipPopUp.offsetWidth - (this.containerWidth / 2) + 'px';
     }
+
+    topEdge() {
+        this.wrapper.style.top = this.containerTop + this.containerHeight + 'px';
+        this.toolTipPopUp.style.marginTop = '15px';
+        this.toolTipPopUp.style.marginBottom = '0px';
+        this.triangle.style.top = '-30px';
+        this.triangle.style.transform = 'rotate(180deg)';
+    } 
     
 }
 
