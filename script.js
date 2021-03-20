@@ -23,16 +23,15 @@ class ToolTip {
     
     // Search for changes in the DOM
     detectDynamicContentLoaded() {
-        let self = this;
         this.target = document.querySelector('body');
         this.config = { childList: true, subtree: true };
-        this.callBackObserver = function(mutationsList) {
+        this.callBackObserver = mutationsList => {
             for (let mutation of mutationsList) {
                 if (mutation.addedNodes[0] && mutation.addedNodes[0].classList) {
                     let containerClass = mutation.addedNodes[0].classList;
                     if (!containerClass.contains('toolTipPopUp')) {
                         this.containers = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
-                        self.findAllToolTips(this.containers);
+                        this.findAllToolTips(this.containers);
                     }
                 }
             }
@@ -43,10 +42,9 @@ class ToolTip {
     
     // Loop through all containers
     findAllToolTips(container) {
-        let self  = this;
         container.forEach((tooltip) => {
-            self.selectContainers(tooltip);
-            self.addEvents(tooltip);
+            this.selectContainers(tooltip);
+            this.addEvents(tooltip);
         });
     }
 
