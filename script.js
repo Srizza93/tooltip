@@ -3,6 +3,7 @@ class ToolTip {
     constructor() {
         this.toolTip = document.querySelectorAll('[data-tooltip]');
         this.toolTipPopUp = undefined;
+        this.wrapper =  undefined;
         this.toolTipClick = true;
         this.toolTipText = undefined;
         this.containerLeft = undefined;
@@ -73,8 +74,8 @@ class ToolTip {
 
     mouseLeave() {
         this.deleteToolTip();
-        this.toolTipPopUp.addEventListener('mouseenter', this.mount.bind(this));
-        this.toolTipPopUp.addEventListener('mouseleave', this.deleteToolTip.bind(this));
+        this.wrapper.addEventListener('mouseenter', this.mount.bind(this));
+        this.wrapper.addEventListener('mouseleave', this.deleteToolTip.bind(this));
     }
     
     // Switcher for touch screen devices
@@ -90,22 +91,25 @@ class ToolTip {
     }
 
     deleteToolTip() {
-        document.querySelectorAll('.toolTipPopUp').forEach(tooltip => tooltip.remove());
+        document.querySelectorAll('.toolTipWrapper').forEach(tooltip => tooltip.remove());
     }
 
     render() {
         // Create new element
+        this.wrapper = document.createElement('div');
         this.toolTipPopUp = document.createElement('div');
         // Add text in tooltip
         this.toolTipPopUp.appendChild(document.createTextNode(this.toolTipText));
         // Add class
+        this.wrapper.classList.add('toolTipWrapper');
         this.toolTipPopUp.classList.add('toolTipPopUp');
         this.mount();
     }
     
     // Mount into DOM
     mount() {
-        document.querySelector('body').prepend(this.toolTipPopUp);
+        document.querySelector('body').prepend(this.wrapper);
+        this.wrapper.appendChild(this.toolTipPopUp);
         this.toolTipClick = true;
         this.calculatePosition();
     }
@@ -124,13 +128,13 @@ class ToolTip {
     }
     
     setPosition() {
-        this.toolTipPopUp.style.top = this.containerTop + this.containerHeight + 10 + 'px';
-        this.toolTipPopUp.style.left = this.containerLeft - this.centerToolTip + 'px';
+        this.wrapper.style.top = this.containerTop - this.wrapper.offsetHeight + 'px';
+        this.wrapper.style.left = this.containerLeft - this.centerToolTip + 'px';
     }
     
     setWidth() {
         const toolTipPopUpWidth = this.toolTipPopUp.offsetWidth;
-        this.toolTipPopUp.style.width = toolTipPopUpWidth + 'px';
+        this.wrapper.style.width = toolTipPopUpWidth + 'px';
     }
     
 }
