@@ -72,8 +72,8 @@ class ToolTip {
     }
 
     mouseLeave() {
-        this.deleteToolTip();
         this.wrapper.addEventListener('mouseenter', this.mount.bind(this));
+        this.deleteToolTip();
         this.wrapper.addEventListener('mouseleave', this.deleteToolTip.bind(this));
     }
     
@@ -122,37 +122,37 @@ class ToolTip {
         // Left Edge
         if (this.containerLeft - this.centerToolTip <= 0) {
             this.leftEdge();
-            this.centerToolTip = 0;
         }
         // Right Edge
-        if (this.containerRight + this.centerToolTip >= this.viewportWidth) {
+        else if (this.containerLeft + this.containerWidth + this.centerToolTip > this.viewportWidth) {
             this.rightEdge();
-            this.centerToolTip = this.toolTipPopUp.offsetWidth - this.containerWidth;
         }
         this.setPosition();
         // Top Edge
-        if (this.wrapper.offsetTop < 0) {
+        if (this.wrapper.offsetTop - this.scrollTop < 0) {
             this.topEdge();
         }
     }
     
     setPosition() {
-        this.wrapper.style.top = this.containerTop - this.wrapper.offsetHeight + 'px';
+        this.wrapper.style.top = this.containerTop - this.wrapper.offsetHeight - 1 + 'px';
         this.wrapper.style.left = this.containerLeft - this.centerToolTip + 'px';
     }
     
     leftEdge() {
         this.triangle.style.left = this.containerWidth / 2 + 'px';
+        this.centerToolTip = 0;
     }
 
     rightEdge() {
-        const toolTipPopUpWidth = this.toolTipPopUp.offsetWidth;
-        this.wrapper.style.width = toolTipPopUpWidth + 'px';
+        const wrapperWidth = this.wrapper.offsetWidth;
+        this.wrapper.style.width = wrapperWidth + 'px';
         this.triangle.style.left = this.toolTipPopUp.offsetWidth - (this.containerWidth / 2) + 'px';
+        this.centerToolTip = this.toolTipPopUp.offsetWidth - this.containerWidth;
     }
 
     topEdge() {
-        this.wrapper.style.top = this.containerTop + this.containerHeight + 'px';
+        this.wrapper.style.top = this.containerTop + this.containerHeight - 1 + 'px';
         this.toolTipPopUp.style.marginTop = '15px';
         this.toolTipPopUp.style.marginBottom = '0px';
         this.triangle.style.top = '-30px';
