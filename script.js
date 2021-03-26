@@ -19,7 +19,7 @@ class ToolTip {
         this.target = undefined;
         this.observer = undefined;
         this.findAllToolTips(this.containers);
-        this.detectDynamicContentLoaded();
+        document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
     }
     
     // Search for changes in the DOM
@@ -28,10 +28,10 @@ class ToolTip {
         this.config = { childList: true, subtree: true };
         this.callBackObserver = mutationsList => {
             for (let mutation of mutationsList) {
-                if (mutation.addedNodes[0] && mutation.addedNodes[0].classList) {
-                    let containerClass = mutation.addedNodes[0].classList.value;
+                if (mutation.addedNodes.length > 0) {
+                    let containerClass = mutation.addedNodes.item(0).classList.value;
                     if (!this.toolTipClasses.includes(containerClass)) {
-                        this.containers = mutation.addedNodes[0].querySelectorAll('[data-tooltip]');
+                        this.containers = mutation.addedNodes.item(0).querySelectorAll('[data-tooltip]');
                         this.findAllToolTips(this.containers);
                     }
                 }
