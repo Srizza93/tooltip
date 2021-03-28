@@ -4,41 +4,34 @@ class ToolTip {
         this.containers = document.querySelectorAll('[data-tooltip]');
         this.toolTipClasses = ['toolTipWrapper', 'toolTipPopUp', 'triangle'];
         this.elementToObserve = document.querySelector('body');
-        this.viewportWidth = document.documentElement.clientWidth;
+        this.toolTipClick = true;
         this.toolTipPopUp = undefined;
         this.wrapper =  undefined;
-        this.toolTipClick = true;
-        this.toolTipText = undefined;
-        this.containerLeft = undefined;
-        this.containerRight = undefined;
         this.containerWidth = undefined;
         this.containerHeight = undefined;
-        this.centerToolTip = undefined;
         this.scrollTop = undefined;
+        this.scrollLeft = undefined;
         this.triangle = undefined;
-        this.target = undefined;
-        this.observer = undefined;
         this.findAllToolTips(this.containers);
         document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
     }
     
     // Search for changes in the DOM
     detectDynamicContentLoaded() {
-        this.target = document.querySelector('body');
-        this.config = { childList: true, subtree: true };
+        const config = { childList: true, subtree: true };
         this.callBackObserver = mutationsList => {
             for (let mutation of mutationsList) {
                 if (mutation.addedNodes.length > 0) {
-                    let containerClass = mutation.addedNodes.item(0).classList.value;
+                    const containerClass = mutation.addedNodes.item(0).classList.value;
                     if (!this.toolTipClasses.includes(containerClass)) {
-                        this.containers = mutation.addedNodes.item(0).querySelectorAll('[data-tooltip]');
-                        this.findAllToolTips(this.containers);
+                        const containers = mutation.addedNodes.item(0).querySelectorAll('[data-tooltip]');
+                        this.findAllToolTips(containers);
                     }
                 }
             }
         }
-        this.observer = new MutationObserver(this.callBackObserver);
-        this.observer.observe(this.target, this.config);
+        const observer = new MutationObserver(this.callBackObserver);
+        observer.observe(this.elementToObserve, config);
     }
     
     // Loop through all containers
@@ -62,19 +55,18 @@ class ToolTip {
     
     // Detect the hovered or clicked tooltip container
     detectToolTip(container) {
+        const toolTipText = container.currentTarget.dataset.tooltip;
         this.scrollTop = document.documentElement.scrollTop;
-        this.toolTipText = container.currentTarget.dataset.tooltip;
-        this.containerLeft = container.currentTarget.getBoundingClientRect().left;
-        this.containerRight = container.currentTarget.getBoundingClientRect().right;
-        this.containerTop = container.currentTarget.getBoundingClientRect().top + this.scrollTop;
+        this.scrollLeft = document.documentElement.scrollLeft;
+        this.containerRect = container.currentTarget.getBoundingClientRect();
         this.containerWidth = container.currentTarget.offsetWidth;
         this.containerHeight = container.currentTarget.offsetHeight;
-        this.render();
+        this.render(toolTipText);
     }
     
     mouseLeave() {
-        this.wrapper.addEventListener('mouseenter', this.mount.bind(this));
         this.deleteToolTip();
+        this.wrapper.addEventListener('mouseenter', this.mount.bind(this));
         this.wrapper.addEventListener('mouseleave', this.deleteToolTip.bind(this));
     }
     
@@ -94,13 +86,13 @@ class ToolTip {
         document.querySelectorAll('.toolTipWrapper').forEach(tooltip => tooltip.remove());
     }
     
-    render() {
+    render(toolTipText) {
         // Create new elements
         this.wrapper = document.createElement('div');
         this.toolTipPopUp = document.createElement('div');
         this.triangle = document.createElement('div');
         // Add text in tooltip
-        this.toolTipPopUp.appendChild(document.createTextNode(this.toolTipText));
+        this.toolTipPopUp.appendChild(document.createTextNode(toolTipText));
         // Add classes
         this.wrapper.classList.add('toolTipWrapper');
         this.toolTipPopUp.classList.add('toolTipPopUp');
@@ -119,41 +111,55 @@ class ToolTip {
     
     // Calculate tooltip position
     calculatePosition() {
-        this.centerToolTip = (this.wrapper.offsetWidth - this.containerWidth) / 2;
+        const windowWidth = document.body.scrollWidth;
+        const wrapperWidth = this.wrapper.offsetWidth;
+        const centerToolTip = (this.wrapper.offsetWidth - this.containerWidth) / 2;
+        // Set Width
+        this.setWidth(wrapperWidth);
         // Left Edge
-        if (this.containerLeft - this.centerToolTip <= 0) {
+        if (this.containerRect.left - centerToolTip <= 0 - this.scrollLeft) {
             this.leftEdge();
         }
         // Right Edge
-        else if (this.containerLeft + this.containerWidth + this.centerToolTip > this.viewportWidth) {
-            this.rightEdge();
+        else if (this.containerRect.left + this.scrollLeft + this.containerWidth + centerToolTip > windowWidth) {
+            this.rightEdge(wrapperWidth);
         }
-        this.setPosition();
+        // No edges
+        else {
+            this.noEdges(centerToolTip);
+        }
+        // Set Top
+        this.setTop();
         // Top Edge
         if (this.wrapper.offsetTop - this.scrollTop < 0) {
             this.topEdge();
         }
     }
-    
-    setPosition() {
-        this.wrapper.style.top = this.containerTop - this.wrapper.offsetHeight - 1 + 'px';
-        this.wrapper.style.left = this.containerLeft - this.centerToolTip + 'px';
+
+    setWidth(wrapperWidth) {
+        this.wrapper.style.width = wrapperWidth + 'px';
     }
     
     leftEdge() {
         this.triangle.style.left = this.containerWidth / 2 + 'px';
-        this.centerToolTip = 0;
+        this.wrapper.style.left = this.containerRect.left + this.scrollLeft + 'px';
     }
     
-    rightEdge() {
-        const wrapperWidth = this.wrapper.offsetWidth;
-        this.wrapper.style.width = wrapperWidth + 'px';
-        this.triangle.style.left = this.toolTipPopUp.offsetWidth - (this.containerWidth / 2) + 'px';
-        this.centerToolTip = this.toolTipPopUp.offsetWidth - this.containerWidth;
+    rightEdge(wrapperWidth) {
+        this.wrapper.style.left = this.containerRect.left + this.containerWidth + this.scrollLeft - wrapperWidth + 'px';
+        this.triangle.style.left = this.wrapper.offsetWidth - (this.containerWidth / 2) + 'px';
+    }
+
+    noEdges(centerToolTip) {
+        this.wrapper.style.left = this.containerRect.left + this.scrollLeft - centerToolTip + 'px';
+    }
+    
+    setTop() {
+        this.wrapper.style.top = this.containerRect.top + this.scrollTop - this.wrapper.offsetHeight - 1 + 'px';
     }
     
     topEdge() {
-        this.wrapper.style.top = this.containerTop + this.containerHeight - 1 + 'px';
+        this.wrapper.style.top = this.containerRect.top + this.scrollTop + this.containerHeight - 1 + 'px';
         this.toolTipPopUp.style.marginTop = '15px';
         this.toolTipPopUp.style.marginBottom = '0px';
         this.triangle.style.top = '-30px';
