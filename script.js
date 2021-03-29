@@ -2,28 +2,25 @@ class ToolTip {
     
     constructor() {
         this.containers = document.querySelectorAll('[data-tooltip]');
-        this.toolTipClasses = ['toolTipWrapper', 'toolTipPopUp', 'triangle'];
-        this.elementToObserve = document.querySelector('body');
-        this.toolTipClick = true;
-        this.toolTipPopUp = undefined;
         this.wrapper =  undefined;
+        this.toolTipPopUp = undefined;
+        this.triangle = undefined;
         this.containerWidth = undefined;
         this.containerHeight = undefined;
-        this.scrollTop = undefined;
-        this.scrollLeft = undefined;
-        this.triangle = undefined;
         this.findAllToolTips(this.containers);
         document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
     }
     
     // Search for changes in the DOM
     detectDynamicContentLoaded() {
+        const toolTipClasses = ['toolTipWrapper', 'toolTipPopUp', 'triangle'];
+        const elementToObserve = document.querySelector('body');
         const config = { childList: true, subtree: true };
         this.callBackObserver = mutationsList => {
             for (let mutation of mutationsList) {
                 if (mutation.addedNodes.length > 0) {
                     const containerClass = mutation.addedNodes.item(0).classList.value;
-                    if (!this.toolTipClasses.includes(containerClass)) {
+                    if (!toolTipClasses.includes(containerClass)) {
                         const containers = mutation.addedNodes.item(0).querySelectorAll('[data-tooltip]');
                         this.findAllToolTips(containers);
                     }
@@ -31,7 +28,7 @@ class ToolTip {
             }
         }
         const observer = new MutationObserver(this.callBackObserver);
-        observer.observe(this.elementToObserve, config);
+        observer.observe(elementToObserve, config);
     }
     
     // Loop through all containers
@@ -56,8 +53,6 @@ class ToolTip {
     // Detect the hovered or clicked tooltip container
     detectToolTip(container) {
         const toolTipText = container.currentTarget.dataset.tooltip;
-        this.scrollTop = document.documentElement.scrollTop;
-        this.scrollLeft = document.documentElement.scrollLeft;
         this.containerRect = container.currentTarget.getBoundingClientRect();
         this.containerWidth = container.currentTarget.offsetWidth;
         this.containerHeight = container.currentTarget.offsetHeight;
@@ -72,12 +67,12 @@ class ToolTip {
     
     // Switcher for touch screen devices
     switchToolTip(container) {
-        if (!this.toolTipClick) {
-            this.toolTipClick = true;
+        if (container.target.classList.contains('Off')) {
+            container.target.classList.remove('Off');
             this.detectToolTip(container);
         }
         else {
-            this.toolTipClick = false;
+            container.target.classList.add('Off');
             this.deleteToolTip();
         }
     }
@@ -105,34 +100,35 @@ class ToolTip {
         document.querySelector('body').prepend(this.wrapper);
         this.wrapper.appendChild(this.toolTipPopUp);
         this.toolTipPopUp.appendChild(this.triangle);
-        this.toolTipClick = true;
         this.calculatePosition();
     }
     
     // Calculate tooltip position
     calculatePosition() {
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollLeft = document.documentElement.scrollLeft;
         const windowWidth = document.body.scrollWidth;
         const wrapperWidth = this.wrapper.offsetWidth;
         const centerToolTip = (this.wrapper.offsetWidth - this.containerWidth) / 2;
         // Set Width
         this.setWidth(wrapperWidth);
         // Left Edge
-        if (this.containerRect.left - centerToolTip <= 0 - this.scrollLeft) {
-            this.leftEdge();
+        if (this.containerRect.left - centerToolTip <= 0 - scrollLeft) {
+            this.leftEdge(scrollLeft);
         }
         // Right Edge
-        else if (this.containerRect.left + this.scrollLeft + this.containerWidth + centerToolTip > windowWidth) {
-            this.rightEdge(wrapperWidth);
+        else if (this.containerRect.left + scrollLeft + this.containerWidth + centerToolTip > windowWidth) {
+            this.rightEdge(wrapperWidth, scrollLeft);
         }
         // No edges
         else {
-            this.noEdges(centerToolTip);
+            this.noEdges(centerToolTip, scrollLeft);
         }
         // Set Top
-        this.setTop();
+        this.setTop(scrollTop);
         // Top Edge
-        if (this.wrapper.offsetTop - this.scrollTop < 0) {
-            this.topEdge();
+        if (this.wrapper.offsetTop - scrollTop < 0) {
+            this.topEdge(scrollTop);
         }
     }
 
@@ -140,26 +136,26 @@ class ToolTip {
         this.wrapper.style.width = wrapperWidth + 'px';
     }
     
-    leftEdge() {
+    leftEdge(scrollLeft) {
         this.triangle.style.left = this.containerWidth / 2 + 'px';
-        this.wrapper.style.left = this.containerRect.left + this.scrollLeft + 'px';
+        this.wrapper.style.left = this.containerRect.left + scrollLeft + 'px';
     }
     
-    rightEdge(wrapperWidth) {
-        this.wrapper.style.left = this.containerRect.left + this.containerWidth + this.scrollLeft - wrapperWidth + 'px';
+    rightEdge(wrapperWidth, scrollLeft) {
+        this.wrapper.style.left = this.containerRect.left + this.containerWidth + scrollLeft - wrapperWidth + 'px';
         this.triangle.style.left = this.wrapper.offsetWidth - (this.containerWidth / 2) + 'px';
     }
 
-    noEdges(centerToolTip) {
-        this.wrapper.style.left = this.containerRect.left + this.scrollLeft - centerToolTip + 'px';
+    noEdges(centerToolTip, scrollLeft) {
+        this.wrapper.style.left = this.containerRect.left + scrollLeft - centerToolTip + 'px';
     }
     
-    setTop() {
-        this.wrapper.style.top = this.containerRect.top + this.scrollTop - this.wrapper.offsetHeight - 1 + 'px';
+    setTop(scrollTop) {
+        this.wrapper.style.top = this.containerRect.top + scrollTop - this.wrapper.offsetHeight - 1 + 'px';
     }
     
-    topEdge() {
-        this.wrapper.style.top = this.containerRect.top + this.scrollTop + this.containerHeight - 1 + 'px';
+    topEdge(scrollTop) {
+        this.wrapper.style.top = this.containerRect.top + scrollTop + this.containerHeight - 1 + 'px';
         this.toolTipPopUp.style.marginTop = '15px';
         this.toolTipPopUp.style.marginBottom = '0px';
         this.triangle.style.top = '-30px';
