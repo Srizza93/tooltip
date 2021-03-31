@@ -8,10 +8,10 @@ class ToolTip {
         this.containerWidth = undefined;
         this.containerHeight = undefined;
         this.findAllToolTips(this.containers);
-        document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
+        // document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
     }
     
-    // Search for changes in the DOM
+    // Detect changes in DOM - MUTATION OBSERVER
     detectDynamicContentLoaded() {
         const toolTipClasses = ['toolTipWrapper', 'toolTipPopUp', 'triangle'];
         const elementToObserve = document.querySelector('body');
@@ -29,6 +29,11 @@ class ToolTip {
         }
         const observer = new MutationObserver(this.callBackObserver);
         observer.observe(elementToObserve, config);
+    }
+    
+    addMoreTooltips(root) {
+        const newTooltips = root.querySelectorAll('[data-tooltip]');
+        this.findAllToolTips(newTooltips);
     }
     
     // Loop through all containers
@@ -59,6 +64,8 @@ class ToolTip {
         this.render(toolTipText);
     }
     
+    // Delete the existing tooltip and create a new one when wrapper is hovered
+    // Delete when leaving the wrapper
     mouseLeave() {
         this.deleteToolTip();
         this.wrapper.addEventListener('mouseenter', this.mount.bind(this));
@@ -164,4 +171,4 @@ class ToolTip {
     
 }
 
-new ToolTip();
+const bookingTooltips = new ToolTip();
