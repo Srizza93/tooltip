@@ -1,20 +1,19 @@
 class ToolTip {
     
     constructor() {
-        this.containers = document.querySelectorAll('[data-tooltip]');
         this.wrapper =  undefined;
         this.toolTipPopUp = undefined;
         this.triangle = undefined;
         this.containerWidth = undefined;
         this.containerHeight = undefined;
-        this.findAllToolTips(this.containers);
+        this.addMoreTooltips(document);
         // document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
     }
     
     // Detect changes in DOM - MUTATION OBSERVER
     detectDynamicContentLoaded() {
         const toolTipClasses = ['toolTipWrapper', 'toolTipPopUp', 'triangle'];
-        const elementToObserve = document.querySelector('body');
+        const elementToObserve = document.body;
         const config = { childList: true, subtree: true };
         this.callBackObserver = mutationsList => {
             for (let mutation of mutationsList) {
@@ -33,12 +32,7 @@ class ToolTip {
     
     addMoreTooltips(root) {
         const newTooltips = root.querySelectorAll('[data-tooltip]');
-        this.findAllToolTips(newTooltips);
-    }
-    
-    // Loop through all containers
-    findAllToolTips(container) {
-        container.forEach((tooltip) => {
+        newTooltips.forEach((tooltip) => {
             this.selectContainers(tooltip);
             this.addEvents(tooltip);
         });
