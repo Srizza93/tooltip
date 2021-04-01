@@ -6,7 +6,7 @@ class ToolTip {
         this.triangle = undefined;
         this.containerWidth = undefined;
         this.containerHeight = undefined;
-        this.addMoreTooltips(document);
+        this.addTooltips(document);
         // document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
     }
     
@@ -30,9 +30,11 @@ class ToolTip {
         observer.observe(elementToObserve, config);
     }
     
-    addMoreTooltips(root) {
-        const newTooltips = root.querySelectorAll('[data-tooltip]');
-        newTooltips.forEach((tooltip) => {
+    // Search for the last wrapper and add tooltips
+    addTooltips(root) {
+        const allWrappers = root.querySelectorAll('.wrapper');
+        const lastWrapper = allWrappers[allWrappers.length - 1].querySelectorAll('[data-tooltip]');
+        lastWrapper.forEach((tooltip) => {
             this.selectContainers(tooltip);
             this.addEvents(tooltip);
         });
