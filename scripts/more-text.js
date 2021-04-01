@@ -1,40 +1,37 @@
 class AddText {
 
     constructor(text) {
-        this.button = document.querySelector('button[type="button"]');
-        this.bridge = document.querySelector('.text-bridge')
-        this.wrapper = undefined;
-        this.paragraph = undefined;
         this.text = text;
-        this.client = undefined;
         this.addEvent();
     }
-
+    
     addEvent() {
-        this.button.addEventListener('click', this.render.bind(this));
+        const button = document.querySelector('button[type="button"]');
+        button.addEventListener('click', this.render.bind(this));
     }
-
+    
     render() {
-        this.wrapper = document.createElement('section');
-        this.wrapper.classList.add('wrapper');
-        this.paragraph = document.createElement('p');
-        this.paragraph.innerHTML = this.text;
-        this.wrapper.appendChild(this.paragraph);
-        this.mount();
+        const wrapper = document.createElement('section');
+        wrapper.classList.add('wrapper');
+        const paragraph = document.createElement('p');
+        paragraph.innerHTML = this.text;
+        wrapper.appendChild(paragraph);
+        this.mount(wrapper);
     }
-
-    mount() {
-        this.bridge.appendChild(this.wrapper);
+    
+    mount(wrapper) {
+        const bridge = document.querySelector('.text-bridge')
+        bridge.appendChild(wrapper);
         this.toolTipAPI();
     }
 
     toolTipAPI() {
-        bookingTooltips.addMoreTooltips(document);
+        bookingTooltips.addTooltips(document);
     }
 
 }
 
-let text = `What is Lorem Ipsum?
+const text = `What is Lorem Ipsum?
 Lorem Ipsum is simply dummy text of the printing and <span data-tooltip="Hello world!">typesetting</span> industry.
 Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
 when an unknown printer took a galley of <span data-tooltip="What a lovely day!">type and scrambled</span> it to make a <span data-tooltip="Hello world!">type</span> specimen book.
