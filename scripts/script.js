@@ -21,7 +21,7 @@ class ToolTip {
                     const containerClass = mutation.addedNodes.item(0).classList.value;
                     if (!toolTipClasses.includes(containerClass)) {
                         const containers = mutation.addedNodes.item(0).querySelectorAll('[data-tooltip]');
-                        this.findAllToolTips(containers);
+                        this.addTooltips(containers);
                     }
                 }
             }
