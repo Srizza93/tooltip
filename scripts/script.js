@@ -6,43 +6,20 @@ class ToolTip {
         this.triangle = undefined;
         this.containerWidth = undefined;
         this.containerHeight = undefined;
-        this.addTooltips(document);
-        // document.addEventListener('DOMContentLoaded', this.detectDynamicContentLoaded.bind(this));
+        this.eventDetector();
     }
-    
-    // Detect changes in DOM - MUTATION OBSERVER
-    detectDynamicContentLoaded() {
-        const toolTipClasses = ['toolTipWrapper', 'toolTipPopUp', 'triangle'];
-        const elementToObserve = document.body;
-        const config = { childList: true, subtree: true };
-        this.callBackObserver = mutationsList => {
-            for (let mutation of mutationsList) {
-                if (mutation.addedNodes.length > 0) {
-                    const containerClass = mutation.addedNodes.item(0).classList.value;
-                    if (!toolTipClasses.includes(containerClass)) {
-                        const containers = mutation.addedNodes.item(0).querySelectorAll('[data-tooltip]');
-                        this.addTooltips(containers);
-                    }
-                }
+
+    // Event delegation
+    eventDetector() {
+        const container = document.querySelectorAll('.wrapper');
+        const lastContainer = container[container.length - 1];
+        lastContainer.onmouseover = (event) => {
+            let target = event.target;
+            if (!target.hasAttribute('data-tooltip')) {
+                return;
             }
-        }
-        const observer = new MutationObserver(this.callBackObserver);
-        observer.observe(elementToObserve, config);
-    }
-    
-    // Search for the last wrapper and add tooltips
-    addTooltips(root) {
-        const allWrappers = root.querySelectorAll('.wrapper');
-        const lastWrapper = allWrappers[allWrappers.length - 1].querySelectorAll('[data-tooltip]');
-        lastWrapper.forEach((tooltip) => {
-            this.selectContainers(tooltip);
-            this.addEvents(tooltip);
-        });
-    }
-    
-    // Add class to containers
-    selectContainers(container) {
-        container.classList.add('toolTip');
+            this.addEvents(target);
+        };
     }
     
     addEvents(container) {
@@ -62,7 +39,9 @@ class ToolTip {
     
     // Delete the existing tooltip and create a new one when wrapper is hovered
     // Delete when leaving the wrapper
-    mouseLeave() {
+    mouseLeave(container) {
+        const clone = container.target.cloneNode(true);
+        container.target.parentNode.replaceChild(clone, container.target);
         this.deleteToolTip();
         this.wrapper.addEventListener('mouseenter', this.mount.bind(this));
         this.wrapper.addEventListener('mouseleave', this.deleteToolTip.bind(this));
