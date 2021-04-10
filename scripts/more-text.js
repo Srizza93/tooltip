@@ -26,7 +26,7 @@ class AddText {
     }
 
     toolTipAPI() {
-        bookingTooltips.addTooltips(document);
+        bookingTooltips.eventDetector();
     }
 
 }
