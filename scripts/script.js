@@ -11,50 +11,77 @@ class ToolTip {
 
     // Event delegation
     eventDetector() {
-        const container = document.querySelectorAll('.wrapper');
-        const lastContainer = container[container.length - 1];
-        lastContainer.onmouseover = (event) => {
-            let target = event.target;
+        this.addTooltips(document);
+        const tooltipClasses = ['triangle', 'toolTipWrapper', 'toolTipPopUp', 'toolTip'];
+        const tooltipWrapper = document.querySelector('.toolTipWrapper');
+        document.body.onmouseover = (event) => {
+            let target = event.target.closest('span');
+            if (!target) {
+                return;
+            }
             if (!target.hasAttribute('data-tooltip')) {
                 return;
             }
-            this.addEvents(target);
+            if (event.fromElement === null) {
+                return;
+            }
+            let fromElementClass = event.fromElement.classList.value;
+            if (tooltipClasses.includes(fromElementClass)) {
+                return;
+            }
+            this.detectToolTip(target);
         };
+        document.body.onmouseout = (event) => {
+            let target = event.target.closest('span');
+            let targetPath = event.path;
+            if (event.toElement === null) {
+                return;
+            }
+            let toElementClass = event.toElement.classList.value;
+            if (!targetPath.includes(tooltipWrapper) && tooltipClasses.includes(toElementClass) ||
+            !target && tooltipClasses.includes(toElementClass)) {
+                return;
+            }
+            this.deleteToolTip();
+        };
+        document.body.onclick = (event) => {
+            let target = event.target.closest('span');
+            if (!target) {
+                return;
+            }
+            if (!target.hasAttribute('data-tooltip')) {
+                return;
+            }
+            this.switchToolTip(target);
+        };
+      
     }
-    
-    addEvents(container) {
-        container.addEventListener('mouseenter', this.detectToolTip.bind(this));
-        container.addEventListener('mouseleave', this.mouseLeave.bind(this));
-        container.addEventListener('click', this.switchToolTip.bind(this));
+
+    addTooltips(root) {
+        const allWrappers = root.querySelectorAll('.wrapper');
+        const lastWrapper = allWrappers[allWrappers.length - 1].querySelectorAll('[data-tooltip]');
+        lastWrapper.forEach((tooltip) => {
+            tooltip.classList.add('toolTip');
+        });
     }
-    
+
     // Detect the hovered or clicked tooltip container
     detectToolTip(container) {
-        const toolTipText = container.currentTarget.dataset.tooltip;
-        this.containerRect = container.currentTarget.getBoundingClientRect();
-        this.containerWidth = container.currentTarget.offsetWidth;
-        this.containerHeight = container.currentTarget.offsetHeight;
+        const toolTipText = container.dataset.tooltip;
+        this.containerRect = container.getBoundingClientRect();
+        this.containerWidth = container.offsetWidth;
+        this.containerHeight = container.offsetHeight;
         this.render(toolTipText);
-    }
-    
-    // Delete the existing tooltip and create a new one when wrapper is hovered
-    // Delete when leaving the wrapper
-    mouseLeave(container) {
-        const clone = container.target.cloneNode(true);
-        container.target.parentNode.replaceChild(clone, container.target);
-        this.deleteToolTip();
-        this.wrapper.addEventListener('mouseenter', this.mount.bind(this));
-        this.wrapper.addEventListener('mouseleave', this.deleteToolTip.bind(this));
     }
     
     // Switcher for touch screen devices
     switchToolTip(container) {
-        if (container.target.classList.contains('Off')) {
-            container.target.classList.remove('Off');
+        if (container.classList.contains('Off')) {
+            container.classList.remove('Off');
             this.detectToolTip(container);
         }
         else {
-            container.target.classList.add('Off');
+            container.classList.add('Off');
             this.deleteToolTip();
         }
     }
