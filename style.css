@@ -26,49 +26,30 @@ p {
   margin: 0 auto;
 }
 
-<<<<<<< HEAD
 span[data-tooltip] {
-=======
-.toolTip {
->>>>>>> df4dcb9bd00628293e732034ecc4e94dd475a3a9
   color: red;
   border-bottom: 1px dotted grey;
 }
 
 .toolTip:hover {
-<<<<<<< HEAD
   background-color: black;
   color: white;
-=======
-  background-color: #4c76b2;
->>>>>>> df4dcb9bd00628293e732034ecc4e94dd475a3a9
 }
 
 .toolTipWrapper {
   position: absolute;
   z-index: 9999;
-<<<<<<< HEAD
   max-width: 450px;
   height: auto;
-=======
->>>>>>> df4dcb9bd00628293e732034ecc4e94dd475a3a9
 }
 
 .toolTipPopUp {
   position: relative;
   display: inline-block;
   font-size: 18px;
-<<<<<<< HEAD
   z-index: 99999;
   padding: 15px;
   border: 5px solid #3B3737;
-=======
-  max-width: 450px;
-  z-index: 99999;
-  padding: 15px;
-  border: 5px solid #3B3737;
-  height: auto;
->>>>>>> df4dcb9bd00628293e732034ecc4e94dd475a3a9
   border-radius: 6px;
   background-color: #262323;
   color: white;
@@ -86,7 +67,4 @@ span[data-tooltip] {
   border-style: solid;
   border-color: #3B3737 transparent transparent transparent;
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> df4dcb9bd00628293e732034ecc4e94dd475a3a9

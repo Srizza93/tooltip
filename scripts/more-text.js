@@ -1,5 +1,4 @@
 class AddText {
-<<<<<<< HEAD
   constructor(text) {
     this.text = text;
     this.addEvent();
@@ -28,38 +27,6 @@ mount(wrapper) {
 toolTipAPI() {
     bookingTooltips.eventDelegation();
   }
-=======
-
-    constructor(text) {
-        this.text = text;
-        this.addEvent();
-    }
-    
-    addEvent() {
-        const button = document.querySelector('button[type="button"]');
-        button.addEventListener('click', this.render.bind(this));
-    }
-    
-    render() {
-        const wrapper = document.createElement('section');
-        wrapper.classList.add('wrapper');
-        const paragraph = document.createElement('p');
-        paragraph.innerHTML = this.text;
-        wrapper.appendChild(paragraph);
-        this.mount(wrapper);
-    }
-    
-    mount(wrapper) {
-        const bridge = document.querySelector('.text-bridge')
-        bridge.appendChild(wrapper);
-        this.toolTipAPI();
-    }
-
-    toolTipAPI() {
-        bookingTooltips.eventDetector();
-    }
-
->>>>>>> df4dcb9bd00628293e732034ecc4e94dd475a3a9
 }
 
 const text = `What is Lorem Ipsum?
