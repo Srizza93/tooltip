@@ -21,6 +21,7 @@ class ToolTip {
   }
 
   mouseOverTooltip(event) {
+    event.cancelBubble = true;
     let target = event.target.closest("span");
     if (!target) {
       return;
@@ -35,10 +36,12 @@ class ToolTip {
     if (this.tooltipClasses.includes(fromElementClass)) {
       return;
     }
+    console.log(event);
     this.detectToolTip(target);
   }
 
   mouseOutTooltip(event) {
+    event.cancelBubble = true;
     const tooltipWrapper = document.querySelector(".toolTipWrapper");
     let target = event.target.closest("span");
     let targetPath = event.path;
