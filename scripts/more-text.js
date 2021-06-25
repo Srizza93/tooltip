@@ -21,12 +21,8 @@ render() {
 mount(wrapper) {
     const bridge = document.querySelector(".text-bridge");
     bridge.appendChild(wrapper);
-    this.toolTipAPI();
 }
 
-toolTipAPI() {
-    bookingTooltips.eventDelegation();
-  }
 }
 
 const text = `What is Lorem Ipsum?
