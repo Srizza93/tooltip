@@ -42,7 +42,7 @@ class ToolTip {
   mouseOutTooltip(event) {
     const tooltipWrapper = document.querySelector(".toolTipWrapper");
     let target = event.target.closest("span");
-    let targetPath = event.path;
+    let targetPath = event.composedPath();
     if (event.toElement === null) {
       return;
     }
